@@ -13,12 +13,14 @@
                         </div>
                         <div>
                             <div class="row">
-                            <div class="col-12 col-md-6">
-                                <input class="input-div txt-3 d-block w-100 robo" type="text" placeholder="UserName/Email" value="">
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <input class="input-div txt-3 d-block w-100 robo" type="text" placeholder="Email" value="">
-                            </div>
+                            
+                                <div class="col-12 col-md-6">
+                                    <input  v-model="form.email"  class="input-div txt-3 d-block w-100 robo" type="text" placeholder="Email">
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <input v-model="form.password" class="input-div txt-3 d-block w-100 robo" type="text" placeholder="Password">
+                                </div>
 
                                 <div class="col-12 ">
                                     <div class="d-flex justify-content-center  p-21 text-center robo">
@@ -27,8 +29,7 @@
                                 </div>
 
                                 <div class="col-12">
-                                    
-                                        <button class="w-100  input-div txt-3 robo">Sign In</button>
+                                    <button @click="signIn" class="w-100  input-div txt-3 robo">Sign In</button>
                                 </div>
                                 <div class="col-12">
                                     <div class="d-flex px-3 p-21 justify-content-between text-decoration-underline">
@@ -123,9 +124,10 @@
 
 <script>
 import form from 'vuejs-form';
+import axios from 'axios';
 
 let signin_data = {
-    userOremail:'',
+    email:'',
     password:'',
 };
 export default {
@@ -134,18 +136,28 @@ export default {
   data(){
     return{
         form: form.default(signin_data).rules({
-            userOremail: 'required',
+            email: 'required',
             password:'required',
         }).messages({
-            'userOremail.required': 'This field is required.',
+            'email.required': 'This field is required.',
             'password.required': 'This field is required.',
         }),
     }
   },
   methods:{
-        signin(){
+        signIn(){
+            if(this.form.validate().errors().any()) {
+                return;
+            } else {
+                axios.post("https://api.luso.oudi.pt/api/Login", this.form.all()).then((response)=>{
+                    if(response.data.success==true){
+                        this.$router.push({ name: 'purchase-list'});
+                    }
+                }).catch((error) => {
+                });
+            }
             console.log(this.form.all());
-        }
+        }, 
   },
   mounted(){
     

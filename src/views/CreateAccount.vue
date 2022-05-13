@@ -8,14 +8,13 @@
               </div>
               <div>
                   <div class="row">
-                    <div class="col-12 col-md-6">
-                      <input class="input-div txt-3 d-block w-100 robo" type="text" placeholder="Email" value="">
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <!-- <div class="input-div d-flex">
+                    
+
+                    <!-- <div class="col-12 col-md-6">
+                        <div class="input-div d-flex">
                             <label class="txt-3 robo" for="userName">Country</label>
                             <a href="javascript:;" class="btn-icon-2 cursor txt-3"> <i class="fas fa-caret-down fa-2x"></i></a>
-                        </div> -->
+                        </div>
                         
                         <select class="create-ac-country-drop w-100 cursor position-relative">
                             <option selected>Country</option>
@@ -23,26 +22,46 @@
                             <option value="2">Two</option>
                             <option value="3">Three</option>
                         </select>
-                    </div>
+                    </div> -->
+
                     <div class="col-12 col-md-6">
-                      <input class="input-div txt-3 d-block w-100 robo" type="text" placeholder="UserName" value="">
+                      <input v-model="form.name" class="input-div txt-3 d-block w-100 robo" type="text" placeholder="Name">
                     </div>
-                      <div class="col-12 col-md-6 align-items-center">
-                          <div class="d-flex px-3 p-21">
-                              <input class="cursor form-check-input radio-btn p-2" type="checkbox" value="" id="flexCheckDefault">
-                              <label class="px-3 txt-3 robo" for="flexCheckDefault">
-                                    By Continuing I agree to the <a href="javascript:;" class="txt-3">Terms of service</a> and <a href="javascript:;" class="txt-3">Privecy Policy</a>
-                              </label>
+
+                    <div class="col-12 col-md-6">
+                      <input v-model="form.email" class="input-div txt-3 d-block w-100 robo" type="text" placeholder="Email">
+                    </div>
+                    
+                       <div class="col-12 col-md-6">
+                        <input v-model="form.phone" class="input-div txt-3 d-block w-100 robo" type="text" placeholder="Phone">
+                      </div>
+
+                      <div class="col-12 col-md-6">
+                        <input v-model="form.password" class="input-div txt-3 d-block w-100 robo" type="text" placeholder="Password">
+                      </div>
+                      
+                      <!-- <div class="col-12 col-md-6">
+                          <div class="d-flex px-3 justify-content-center">
+                              <div @click="setCaptcha" class="g-recaptcha" data-size="1000" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+                          </div>
+                      </div> -->
+                      <div class="col-12 col-md-6">
+                          <div class="d-flex px-3 justify-content-center">
+                            
+                             <vue-recaptcha v-show="showRecaptcha" sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                                size="normal" 
+                                theme="light"
+                                hl="tr"
+                                @verify="recaptchaVerified($event)"
+                                @expire="recaptchaExpired"
+                                @fail="recaptchaFailed"
+                                ref="vueRecaptcha">
+                              </vue-recaptcha>
                           </div>
                       </div>
 
                       <div class="col-12 col-md-6">
-                        <input class="input-div txt-3 d-block w-100 robo" type="text" placeholder="Password" value="">
-                    </div>
-                      <div class="col-12 col-md-6">
-                          <div class="d-flex px-3 justify-content-center">
-                              <div class="g-recaptcha" data-size="1000" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"  ></div>
-                          </div>
+                        <input v-model="form.password_confirmation" class="input-div txt-3 d-block w-100 robo" type="text" placeholder="Password Confirmation">
                       </div>
 
                       <div class="col-12 col-md-6">
@@ -51,8 +70,17 @@
                           </div>
                       </div>
 
+                      <div class="col-12 col-md-6 align-items-center">
+                          <div class="d-flex px-3 p-21">
+                              <input v-model="checkbox_status" class="cursor form-check-input radio-btn p-2" type="checkbox" id="flexCheckDefault">
+                              <label class="px-3 txt-3 robo" for="flexCheckDefault">
+                                    By Continuing I agree to the <a href="javascript:;" class="txt-3">Terms of service</a> and <a href="javascript:;" class="txt-3">Privecy Policy</a>
+                              </label>
+                          </div>
+                      </div>
+
                       <div class="col-12 col-md-6">
-                          <button class="w-100 text-center input-div txt-3 robo">Create Account</button>
+                          <button @click="createAccount" class="w-100 text-center input-div txt-3 robo">Create Account</button>
                       </div>
                   </div>
               </div>
@@ -140,43 +168,69 @@
 
 <script>
 import form from 'vuejs-form';
+import axios from 'axios';
+import vueRecaptcha from 'vue3-recaptcha2';
 
 let create_ac = {
     email:'',
-    userName:'',
-    country:'',
+    name:'',
+    phone:'',
     password:'',
+    password_confirmation:'',
+    // country:'',
+    g_recaptcha_response:'',
 };
 export default {
   name: 'CreateAccount',
+  components: { vueRecaptcha },
   
   data(){
     return{
         checkbox_status: false,
+        showRecaptcha: false,
+
         form: form.default(create_ac).rules({
                 email: 'required',
-                userName:'required',
+                name:'required',
+                phone:'required',
                 country:'required',
                 password:'required',
             }).messages({
                 'email.required': 'This field is required.',
-                'userName.required': 'This field is required.',
+                'name.required': 'This field is required.',
+                'phone.required': 'This field is required.',
                 'country.required': 'Product data is required.',
                 'password.required': 'This field is required.',
             }),
     }
   },
-    methods:{
-            createAccount(){
-                if(this.checkbox_status){
-                    console.log(this.form.all());          
-                } else {
-                    console.log('checkbox not checked.');          
-                }
-            }
-    },
+  methods:{
+      createAccount(){
+          if(this.checkbox_status){
+              console.log(this.form.all());   
+
+              axios.post("https://api.luso.oudi.pt/api/register", this.form.all()).then((response)=>{
+                  if(response.data.success==true){
+                    this.$router.push({ name: 'purchase-list'});
+                  }
+              }).catch((error) => {
+              });
+              
+              
+          } else {
+              console.log('checkbox not checked.');          
+          }
+      },
+      recaptchaVerified(response) {
+        console.log(response)
+      },
+      recaptchaExpired() {
+        this.$refs.vueRecaptcha.reset();
+      },
+      recaptchaFailed() {
+      },
+  },
   mounted(){
-    
   }
 }
 </script>
