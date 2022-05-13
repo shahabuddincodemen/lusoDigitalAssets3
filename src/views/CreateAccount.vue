@@ -187,7 +187,7 @@ export default {
   data(){
     return{
         checkbox_status: false,
-        showRecaptcha: false,
+        showRecaptcha: true,
 
         form: form.default(create_ac).rules({
                 email: 'required',
