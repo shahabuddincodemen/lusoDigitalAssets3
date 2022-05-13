@@ -256,6 +256,7 @@
 <script>
 import RangeSliderOne from '../components/RangeSliderOne.vue'
 import RangeSliderTwo from '../components/RangeSliderTwo.vue'
+import axios from "axios";
 export default {
   name: 'Investment',
   components: { RangeSliderOne, RangeSliderTwo },
@@ -268,6 +269,17 @@ export default {
         sliderValue: 50,
         value: 50,
     }
+  },
+  async created(){
+       // GET request using axios with error handling
+    axios.get("https://www.luso.com/luso/api/profit-and-returns")
+    .then(response => {
+        console.log(response);
+    })
+    .catch(error => {
+      this.errorMessage = error.message;
+      console.error("There was an error!", error);
+    });
   },
   methods:{
     setSliderBtn(value){
