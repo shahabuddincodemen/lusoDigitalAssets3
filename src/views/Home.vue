@@ -120,7 +120,13 @@
                     </div>
                 </div>
                 <div class="col-md-6 pt-md-0 pt-5">
-                    <v-chart class="chart" :option="option" />
+                  
+                  <div v-if="!option.dataset.source.length" class="d-flex justify-content-center align-items-center" style="height:524px;">
+                    <div class="spinner-border text-primary" style="width: 6rem; height: 6rem;" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
+                  </div>
+                    <v-chart v-else class="chart" :option="option" />
                 </div>
                 </div>
             </div>
@@ -304,6 +310,7 @@
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { BarChart } from "echarts/charts";
+import axios from "axios";
 import {
   GridComponent,
   DatasetComponent,
@@ -334,17 +341,7 @@ export default {
             dataset: {
             dimensions: ['MONTH', 'VALUE', ''],
             source: [
-                { MONTH: 'FEB', VALUE: 20, },
-                { MONTH: 'MAR', VALUE: 100, },
-                { MONTH: 'APR', VALUE: 70, },
-                { MONTH: 'MAY', VALUE: 10, },
-                { MONTH: 'JUN', VALUE: 50, },
-                { MONTH: 'JUL', VALUE: 30, },
-                { MONTH: 'AUG', VALUE: 40, },
-                { MONTH: 'SEP', VALUE: 20, },
-                { MONTH: 'OCT', VALUE: 10, },
-                { MONTH: 'NOV', VALUE: 100, },
-                { MONTH: 'DEC', VALUE: 50, },
+                
             ]
             },
             xAxis: { type: 'category' },
@@ -352,6 +349,8 @@ export default {
             series: [{ type: 'bar' }, { type: 'bar' }],
             animationDuration: 1500
         },
+        errorMessage:"",
+        
     }
   },
 
@@ -368,7 +367,30 @@ export default {
   },
 
   mounted(){
+    // GET request using axios with error handling
+    axios.get("https://api.luso.oudi.pt/api/pair/btceur/chart")
+    .then(response => {
+      // this.option.source
+    let newList=response.data.data.slice(response.data.data.length-30)
+    let newChartList=[]
+    newList.forEach(element => {
+      let chartData={
+        MONTH:"",
+        VALUE:"",
+      }
+      var dt = new Date(element.time);
+      chartData.MONTH=(dt.getMonth() + 1) + "/" + dt.getDate();
+      chartData.VALUE=parseInt(element.value);
+      newChartList.push(chartData)
+      
+    });
+    this.option.dataset.source=newChartList;
     
+    })
+    .catch(error => {
+      this.errorMessage = error.message;
+      console.error("There was an error!", error);
+    });
   }
 }
 </script>
