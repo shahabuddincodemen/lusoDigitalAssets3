@@ -270,11 +270,11 @@
       <div class="max-width">
         <h3 class="text-center font-size-25 txt-2 letter-space-2"> IF YOU'RE LOOKING FOR A WALLET </h3>
         <div class="row up-down-space">
-          <div class="col-6 col-sm-6 col-lg-3">
+          <div v-for="currencyList in currency_list" :key="currencyList.id" class="col-6 col-sm-6 col-lg-3 my-2">
               <img class="left-icon-img" src="../assets/images/bitcoin-1.png" alt="">
-              <span class="font-size-18 txt-2 ps-md-2 ps-0">BITCOIN</span>
+              <span class="font-size-18 txt-2 ps-md-2 ps-0">{{ currencyList.name }}</span>
           </div>
-          <div class="col-6 col-sm-6 col-lg-3">
+          <!-- <div class="col-6 col-sm-6 col-lg-3">
               <img class="left-icon-img " src="../assets/images/bitcoin-2.png" alt="">
             <span class="font-size-18 txt-2 ps-md-2 ps-0">LITECOIN</span>
           </div>
@@ -285,7 +285,7 @@
           <div class="col-6 col-sm-6 col-lg-3 pt-5 pt-lg-0">
               <img class="left-icon-img-last" src="../assets/images/bitcoin-1.png" alt="">
               <span class="font-size-18 txt-2 ps-md-2 ps-0">BITCOIN CASH</span>
-          </div>
+          </div> -->
         </div>
         <div class="row">
           <div class="col-md-12">
@@ -310,7 +310,11 @@
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { BarChart } from "echarts/charts";
+<<<<<<< HEAD
 import axios from "axios";
+=======
+import axios from 'axios';
+>>>>>>> Currency list
 import {
   GridComponent,
   DatasetComponent,
@@ -334,6 +338,7 @@ export default {
   data(){
     return{
       sliderBtn:'btn2',
+      currency_list:[],
       option: {
             color:['#1C01A5'],
             legend: { },
@@ -385,6 +390,9 @@ export default {
       
     });
     this.option.dataset.source=newChartList;
+     axios.get("https://api.luso.oudi.pt/api/coin/index").then((response) => {
+            this.currency_list = response.data.data;
+        });
     
     })
     .catch(error => {

@@ -86,11 +86,11 @@
                     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
                         <p class="txt-2 font-size-22 robo pe-2 py-4">SIMULATION</p>
                         <div class="">
-                        <select class="form-select inv-s2-select cursor robo" aria-label="Default select example">
-                            <option selected>View in &nbsp; USD</option>
-                            <option value="1">View in &nbsp; BTC</option>
+                        <select v-model="currencyAcronym" class="form-select inv-s2-select cursor robo" aria-label="Default select example">
+                            <option v-for="currency in currency_list" :key="currency" :value="currency.id">View in &nbsp; {{currency.acronym}}</option>
+                            <!-- <option value="1">View in &nbsp; BTC</option>
                             <option value="2">View in &nbsp; NACRE</option>
-                            <option value="3">View in &nbsp; GOLD</option>
+                            <option value="3">View in &nbsp; GOLD</option> -->
                         </select>
                         </div>
                     </div>
@@ -262,6 +262,8 @@ export default {
   components: { RangeSliderOne, RangeSliderTwo },
   data(){
     return{
+        currency_list:[],
+        currencyAcronym:2,
         sliderBtn:'btn1',
         activeTab:'12months',
         yearValue:200,
@@ -296,7 +298,17 @@ export default {
     },
   },
   mounted(){
-    
+    axios.get("https://api.luso.oudi.pt/api/coin/index").then((response) => {
+            console.log(response.data.data);
+            this.currency_list = response.data.data;
+            console.log(this.currency_list[0].icon);
+        });
+        axios.get("https://api.luso.oudi.pt/api/pair/BTCEUR").then((response) => {
+            console.log(response.data.data);
+        });
+
   }
+  
+  
 }
 </script>
