@@ -37,7 +37,7 @@
                       </div>
 
                       <div class="col-12 col-md-6">
-                        <input v-model="form.password" class="input-div txt-3 d-block w-100 robo" type="text" placeholder="Password">
+                        <input v-model="form.password" class="input-div txt-3 d-block w-100 robo" type="password" placeholder="Password">
                       </div>
                       
                       <!-- <div class="col-12 col-md-6">
@@ -61,7 +61,7 @@
                       </div>
 
                       <div class="col-12 col-md-6">
-                        <input v-model="form.password_confirmation" class="input-div txt-3 d-block w-100 robo" type="text" placeholder="Password Confirmation">
+                        <input v-model="form.password_confirmation" class="input-div txt-3 d-block w-100 robo" type="password" placeholder="Password Confirmation">
                       </div>
 
                       <div class="col-12 col-md-6">
@@ -178,7 +178,9 @@ let create_ac = {
     password:'',
     password_confirmation:'',
     // country:'',
-    g_recaptcha_response:'',
+    // g_recaptcha_response:'',
+    captcha:'',
+    platform:'api',
 };
 export default {
   name: 'CreateAccount',
@@ -223,6 +225,7 @@ export default {
       },
       recaptchaVerified(response) {
         console.log(response)
+        this.form.captcha='6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
       },
       recaptchaExpired() {
         this.$refs.vueRecaptcha.reset();

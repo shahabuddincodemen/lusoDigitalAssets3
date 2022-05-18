@@ -25,10 +25,10 @@
                                 <div class="col-lg-2 py-lg-0 py-4">
                                 </div>
                                 <div class="col-lg-5 py-3">
-                                <div class="">
+                                <!-- <div class="">
                                     <h5 class=" font-size-28 fw-normal">Get started.</h5>
                                     <button class="font-size-18 slide-right-btn mt-3 word-space robo">Create Account</button>
-                                </div>
+                                </div> -->
                                 </div>
                             </div>
                             </div>
@@ -46,10 +46,10 @@
                                 <div class="col-lg-2 py-lg-0 py-3">
                                 </div>
                                 <div class="col-lg-5 py-4">
-                                <div class="">
+                                <!-- <div class="">
                                     <h5 class="txt-shadow font-size-28 fw-normal">Get started.</h5>
                                     <button class="txt-shadow font-size-18 slide-right-btn mt-3 word-space robo">Create Account</button>
-                                </div>
+                                </div> -->
                                 </div>
                             </div>
                             </div>
@@ -67,10 +67,10 @@
                                 <div class="col-lg-2 py-lg-0 py-3">
                                 </div>
                                 <div class="col-lg-5 py-4">
-                                <div class="">
+                                <!-- <div class="">
                                     <h5 class=" font-size-28 fw-normal">Get started.</h5>
                                     <button class="font-size-18 slide-right-btn mt-3 word-space robo">Create Account</button>
-                                </div>
+                                </div> -->
                                 </div>
                             </div>
                             </div>
@@ -116,7 +116,9 @@
                         <img class="left-icon-img ms-2 ms-sm-3 ms-md-4 ms-lg-5" src="../assets/images/bitcoin-3.png" alt="">
                         <img class="left-icon-img-last ms-2 ms-sm-3 ms-md-4 ms-lg-5" src="../assets/images/img9.png" alt="">
                     </div>
-                    <button class="slide-right-btn-2 font-size-18 mt-3 word-space robo">Keep Up-to-date</button>
+                    <a href="https://localbitcoins.com/accounts/profile/riclas/">
+                      <button class="slide-right-btn-2 font-size-18 mt-3 word-space robo">More info</button>
+                    </a>
                     </div>
                 </div>
                 <div class="col-md-6 pt-md-0 pt-5">
@@ -357,32 +359,31 @@ export default {
 
   mounted(){
     // GET request using axios with error handling
-    axios.get("https://api.luso.oudi.pt/api/pair/btceur/chart")
-    .then(response => {
-      // this.option.source
-    let newList=response.data.data.slice(response.data.data.length-30)
-    let newChartList=[]
-    newList.forEach(element => {
-      let chartData={
-        MONTH:"",
-        VALUE:"",
-      }
-      var dt = new Date(element.time);
-      chartData.MONTH=(dt.getMonth() + 1) + "/" + dt.getDate();
-      chartData.VALUE=parseInt(element.value);
-      newChartList.push(chartData)
-      
-    });
-    this.option.dataset.source=newChartList;
-     axios.get("https://api.luso.oudi.pt/api/coin/index").then((response) => {
-            this.currency_list = response.data.data;
+    axios.get("https://api.luso.oudi.pt/api/pair/btceur/chart").then(response => {
+        // this.option.source
+        // let newList=response.data.data.slice(response.data.data.length-30)
+        let newList=response.data.data;
+        let newChartList=[]
+        newList.forEach(element => {
+          let chartData={
+            MONTH:"",
+            VALUE:"",
+          }
+          var dt = new Date(element.time);
+          // chartData.MONTH=(dt.getMonth() + 1) + "/" + dt.getDate();
+          chartData.MONTH=element.time.slice(0, 10);
+          chartData.VALUE=parseInt(element.value);
+          newChartList.push(chartData)
         });
-    
-    })
-    .catch(error => {
-      this.errorMessage = error.message;
-      console.error("There was an error!", error);
-    });
+        this.option.dataset.source=newChartList;
+      }).catch(error => {
+        this.errorMessage = error.message;
+        console.error("There was an error!", error);
+      });
+
+      axios.get("https://api.luso.oudi.pt/api/coin/index").then((response) => {
+          this.currency_list = response.data.data;
+      });
   }
 }
 </script>
